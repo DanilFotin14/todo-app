@@ -1,47 +1,86 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { computed, ref } from "vue";
+import TaskForm from "./components/TaskForm.vue";
+import type { Task, TaskFilter } from "./types";
+import TaskList from "./components/TaskList.vue";
+import FilterButton from "./components/FilterButton.vue";
+
+const message = ref("Tasks App");
+const tasks = ref<Task[]>([]);
+const filter = ref<TaskFilter>("all");
+
+const totalDone = computed(
+  () => tasks.value.filter((task) => task.completed).length
+);
+
+const filteredTasks = computed(() => {
+  switch (filter.value) {
+    case "all":
+      return tasks.value;
+    case "done":
+      return tasks.value.filter((task) => task.completed);
+    case "todo":
+      return tasks.value.filter((task) => !task.completed);
+  }
+    return tasks.value;
+});
+function addTask(newTask: string) {
+  tasks.value.push({
+    id: tasks.value.length + 1,
+    title: newTask,
+    completed: false,
+  });
+}
+
+function toggleDone(id: string) {
+  tasks.value = tasks.value.map((task) => {
+    if (task.id === Number(id)) {
+      task.completed = !task.completed;
+    }
+    return task;
+  });
+}
+
+function removeTask(id: string) {
+  const index = tasks.value.findIndex((task) => task.id === Number(id));
+  if (index !== -1) {
+    tasks.value.splice(index, 1);
+  }
+}
+
+function setFilter(value: TaskFilter) {
+  filter.value = value;
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
   <main>
-    <TheWelcome />
+    <h1>{{ message }}</h1>
+    <TaskForm @add-task="addTask" />
+    <h3 v-if="!tasks.length">Add a task to get started</h3>
+    <h3 v-else>{{ totalDone }} of {{ tasks.length }} tasks completed</h3>
+    <div v-if="tasks.length" class="button-container">
+      <FilterButton :currentFilter="filter" filter="all" label="All" @set-filter="filter = $event" />
+      <FilterButton :currentFilter="filter" filter="todo" label="todo" @set-filter="filter = $event" />
+      <FilterButton :currentFilter="filter" filter="done" label="done" @set-filter="filter = $event" />
+    </div>
+    <TaskList
+      :tasks="filteredTasks"
+      @toggle-done="toggleDone"
+      @remove-task="removeTask($event)"
+    />
   </main>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<style>
+main {
+  max-width: 800px;
+  margin: 1rem auto;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.button-container {
+  display: flex;
+  justify-content: end;
+  gap: 0.5rem;
 }
 </style>
