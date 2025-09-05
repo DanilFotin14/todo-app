@@ -10,7 +10,7 @@ const props = defineProps<{
 
 <template>
   <button
-    class="secondary"
+    class="task__button secondary"
     :class="{
       contrast: props.currentFilter === props.filter,
     }"

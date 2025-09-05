@@ -22,7 +22,6 @@ const filteredTasks = computed(() => {
     case "todo":
       return tasks.value.filter((task) => !task.completed);
   }
-    return tasks.value;
 });
 function addTask(newTask: string) {
   tasks.value.push({
@@ -55,14 +54,29 @@ function setFilter(value: TaskFilter) {
 
 <template>
   <main>
-    <h1>{{ message }}</h1>
+    <h1 class="title">{{ message }}</h1>
     <TaskForm @add-task="addTask" />
-    <h3 v-if="!tasks.length">Add a task to get started</h3>
-    <h3 v-else>{{ totalDone }} of {{ tasks.length }} tasks completed</h3>
+    <h3 class="subtitle" v-if="!tasks.length">Add a task to get started</h3>
+    <h3 class="subtitle" v-else>{{ totalDone }} of {{ tasks.length }} tasks completed</h3>
     <div v-if="tasks.length" class="button-container">
-      <FilterButton :currentFilter="filter" filter="all" label="All" @set-filter="filter = $event" />
-      <FilterButton :currentFilter="filter" filter="todo" label="todo" @set-filter="filter = $event" />
-      <FilterButton :currentFilter="filter" filter="done" label="done" @set-filter="filter = $event" />
+      <FilterButton
+        :currentFilter="filter"
+        filter="all"
+        label="All"
+        @set-filter="filter = $event"
+      />
+      <FilterButton
+        :currentFilter="filter"
+        filter="todo"
+        label="todo"
+        @set-filter="filter = $event"
+      />
+      <FilterButton
+        :currentFilter="filter"
+        filter="done"
+        label="done"
+        @set-filter="filter = $event"
+      />
     </div>
     <TaskList
       :tasks="filteredTasks"
@@ -72,7 +86,7 @@ function setFilter(value: TaskFilter) {
   </main>
 </template>
 
-<style>
+<style scoped>
 main {
   max-width: 800px;
   margin: 1rem auto;
@@ -82,5 +96,6 @@ main {
   display: flex;
   justify-content: end;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 </style>

@@ -19,22 +19,31 @@ function formSubmitted() {
 </script>
 
 <template>
-  <form action="" @submit.prevent="formSubmitted">
-    <label for="">
+  <form class="task-form" action="" @submit.prevent="formSubmitted">
+    <label class="task-form__label" for="newTask">
       New Task
       <input
+        class="task-form__input"
         type="text"
         v-model="newTask"
         name="newTask"
         :aria-invalid="!!error || undefined"
         @input="error = ''"
       />
-      <small v-if="error" id="invalid-helper">
+      <small class="task-form__error" v-if="error" id="invalid-helper">
         Please provide a valid value!
       </small>
     </label>
-    <div class="button-container">
-      <button>Add</button>
+    <div class="task-form__button-container">
+      <button class="task-form__button">Add</button>
     </div>
   </form>
 </template>
+
+<style>
+.task-form__button-container {
+  display: flex;
+  justify-content: end;
+  gap: 0.5rem;
+}
+</style>
