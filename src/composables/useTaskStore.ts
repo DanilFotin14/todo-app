@@ -1,11 +1,6 @@
 import { ref, computed, watch } from 'vue';
 import { useCookieStorage } from './useCookieStorage';
-
-export interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import type { Task } from "./../types";
 
 export function useTaskStore() {
   const COOKIE_KEY = 'vue-tasks';
