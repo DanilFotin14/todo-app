@@ -4,9 +4,13 @@ import TaskForm from "./components/TaskForm.vue";
 import type { Task, TaskFilter } from "./types";
 import TaskList from "./components/TaskList.vue";
 import FilterButton from "./components/FilterButton.vue";
+import { useTaskStore } from "./composables/useTaskStore";
+
+const taskStore = useTaskStore();
+const tasks =  taskStore.tasks;
 
 const message = ref("Tasks App");
-const tasks = ref<Task[]>([]);
+// const tasks = ref<Task[]>([]);
 const filter = ref<TaskFilter>("all");
 
 const totalDone = computed(
@@ -31,15 +35,6 @@ function addTask(newTask: string) {
   });
 }
 
-function toggleDone(id: string) {
-  tasks.value = tasks.value.map((task) => {
-    if (task.id === Number(id)) {
-      task.completed = !task.completed;
-    }
-    return task;
-  });
-}
-
 function removeTask(id: string) {
   const index = tasks.value.findIndex((task) => task.id === Number(id));
   if (index !== -1) {
@@ -47,8 +42,13 @@ function removeTask(id: string) {
   }
 }
 
-function setFilter(value: TaskFilter) {
-  filter.value = value;
+function toggleDone(id: string) {
+  tasks.value = tasks.value.map((task) => {
+    if (task.id === Number(id)) {
+      task.completed = !task.completed;
+    }
+    return task;
+  });
 }
 </script>
 
@@ -88,8 +88,13 @@ function setFilter(value: TaskFilter) {
 
 <style scoped>
 main {
-  max-width: 800px;
+  max-width: 768px;
   margin: 1rem auto;
+
+  @media (max-width: 768px) {
+    margin: 2rem auto;
+    max-width: calc(100% - 2rem);
+  }
 }
 
 .button-container {
